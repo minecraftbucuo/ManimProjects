@@ -1,3 +1,5 @@
+# 2026.2.27 冒泡排序可视化 AI
+
 from manim import *
 import numpy as np
 

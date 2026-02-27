@@ -1,2 +1,4 @@
 media/
 videos/
+__pycache__/
+.idea/
