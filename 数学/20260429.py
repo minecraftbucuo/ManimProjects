@@ -1,0 +1,172 @@
+from manim import *
+
+
+class NestedFunctionFluidProof(Scene):
+    def construct(self):
+        # ==================== 封面 ====================
+        title = Text("如何求解这个嵌套函数方程？", font="KaiTi", font_size=50)
+        title.set_color_by_gradient(BLUE, GREEN, YELLOW)
+
+        eq_cover = MathTex(
+            r"f(f(x)) = x^2 + 2x",
+            font_size=60
+        ).set_color(BLUE)
+
+        cover = VGroup(title, eq_cover).arrange(DOWN, buff=1)
+        self.play(Write(title))
+        self.play(FadeIn(eq_cover, shift=UP))
+        self.wait(2)
+        self.play(FadeOut(cover))
+
+        # ==================== 第一幕：自然化简 ====================
+        desc_1 = Text("首先观察到右边的式子暗藏玄坤：", font="KaiTi", font_size=30)
+        desc_1.to_edge(UP, buff=0.8)
+        self.play(Write(desc_1))
+
+        eq_orig = MathTex(r"f(f(x)) = x^2 + 2x").set_color(BLUE).next_to(desc_1, DOWN, buff=0.5)
+        self.play(Write(eq_orig))
+        self.wait(1.5)
+
+        desc_2 = Text("稍微配个方，把它凑成完全平方：", font="KaiTi", font_size=28).next_to(eq_orig, DOWN, buff=0.5)
+        self.play(Write(desc_2))
+
+        eq_sq_1 = MathTex(r"f(f(x)) = ", r"(x+1)^2", r" - 1")
+        eq_sq_1[0].set_color(BLUE)
+        eq_sq_1[1].set_color(YELLOW)
+        eq_sq_1.next_to(desc_2, DOWN, buff=0.3)
+        self.play(Write(eq_sq_1))
+        self.wait(1)
+
+        desc_3 = Text("把常数移项，让等式两边结构对齐：", font="KaiTi", font_size=28).next_to(eq_sq_1, DOWN, buff=0.5)
+        self.play(Write(desc_3))
+
+        eq_sq_final = MathTex(r"f(f(x)) + 1 = ", r"(x+1)^2")
+        eq_sq_final[0].set_color(BLUE)
+        eq_sq_final[1].set_color(YELLOW)
+        eq_sq_final.next_to(desc_3, DOWN, buff=0.3)
+        self.play(ReplacementTransform(eq_sq_1.copy(), eq_sq_final))
+        self.wait(2)
+
+        # 整理屏幕
+        self.play(
+            FadeOut(desc_1), FadeOut(eq_orig), FadeOut(desc_2), FadeOut(eq_sq_1), FadeOut(desc_3)
+        )
+        self.play(eq_sq_final.animate.to_edge(UP, buff=0.8))
+
+        # ==================== 第二幕：换元与核心 ====================
+        desc_4_text1 = Text("观察发现，内外层都缠着一个常数", font="KaiTi", font_size=30)
+        desc_4_math = MathTex(r"+1", font_size=32).set_color(YELLOW)
+        desc_4 = VGroup(desc_4_text1, desc_4_math).arrange(RIGHT, buff=0.1).next_to(eq_sq_final, DOWN, buff=0.6)
+        self.play(Write(desc_4))
+
+        desc_5 = Text("不如强行造个新关系把它吸收掉：", font="KaiTi", font_size=28).next_to(desc_4, DOWN, buff=0.3)
+        self.play(Write(desc_5))
+
+        eq_def_g = MathTex(r"g(x+1) = f(x) + 1").set_color(GREEN).next_to(desc_5, DOWN, buff=0.4)
+        self.play(Write(eq_def_g))
+        self.wait(1)
+
+        desc_6 = Text("移项整理出一个代换关系：", font="KaiTi", font_size=28).next_to(eq_def_g, DOWN, buff=0.5)
+        self.play(Write(desc_6))
+
+        eq_dict = MathTex(r"f(x) = g(x+1) - 1").set_color(GREEN).scale(1.1).next_to(desc_6, DOWN, buff=0.3)
+        self.play(TransformMatchingTex(eq_def_g.copy(), eq_dict))
+
+        rect_dict = SurroundingRectangle(eq_dict, color=GREEN, buff=0.15)
+        self.play(Create(rect_dict))
+        self.wait(2)
+
+        # 再次整理屏幕
+        self.play(
+            FadeOut(desc_4), FadeOut(desc_5), FadeOut(eq_def_g), FadeOut(desc_6)
+        )
+        dict_group = VGroup(eq_dict, rect_dict)
+        self.play(dict_group.animate.next_to(eq_sq_final, DOWN, buff=0.5))
+
+        desc_7 = Text("利用这个关系，把原等式一层层重新代换：", font="KaiTi", font_size=28).next_to(dict_group, DOWN,
+                                                                                                  buff=0.6)
+        self.play(Write(desc_7))
+
+        eq_trans = MathTex(r"g(g(x+1)) = (x+1)^2").set_color(GREEN).next_to(desc_7, DOWN, buff=0.4)
+        self.play(ReplacementTransform(eq_sq_final.copy(), eq_trans))
+        self.wait(1.5)
+
+        desc_8_text = Text("为了清爽，整体换元令", font="KaiTi", font_size=28)
+        desc_8_math = MathTex(r"t = x+1", font_size=30).set_color(YELLOW)
+        desc_8 = VGroup(desc_8_text, desc_8_math).arrange(RIGHT, buff=0.1).next_to(eq_trans, DOWN, buff=0.5)
+        self.play(Write(desc_8))
+
+        eq_core = MathTex(r"g(g(t)) = t^2").scale(1.2).set_color(YELLOW).next_to(desc_8, DOWN, buff=0.4)
+        self.play(TransformMatchingTex(eq_trans.copy(), eq_core))
+        self.wait(2)
+
+        # 大清场，只留核心方程
+        self.play(
+            FadeOut(eq_sq_final), FadeOut(desc_7), FadeOut(eq_trans), FadeOut(desc_8)
+        )
+        self.play(
+            dict_group.animate.to_edge(UP, buff=0.5),
+            eq_core.animate.next_to(dict_group, DOWN, buff=1.5)
+        )
+
+        # ==================== 第三幕：求出特解 ====================
+        desc_9 = Text("什么操作连续做两次等于平方？本能会猜幂函数：", font="KaiTi", font_size=28).next_to(eq_core, UP,
+                                                                                                        buff=0.5)
+        self.play(Write(desc_9))
+
+        eq_assume = MathTex(r"g(t) = t^k \implies g(g(t)) = t^{k^2}").set_color(GREEN).next_to(eq_core, DOWN, buff=0.5)
+        self.play(Write(eq_assume))
+        self.wait(1)
+
+        desc_10 = Text("指数必须匹配，所以：", font="KaiTi", font_size=28).next_to(eq_assume, DOWN, buff=0.4)
+        self.play(Write(desc_10))
+
+        eq_solve_k = MathTex(r"k^2 = 2 \implies k = \pm\sqrt{2}").set_color(GREEN).next_to(desc_10, DOWN, buff=0.3)
+        self.play(Write(eq_solve_k))
+        self.wait(1.5)
+
+        # 全屏暴力清场，绝对不往下叠加了
+        self.play(
+            FadeOut(dict_group), FadeOut(eq_core), FadeOut(desc_9), FadeOut(eq_assume), FadeOut(desc_10),
+            FadeOut(eq_solve_k)
+        )
+
+        desc_11 = Text("把求出来的参数代回关系式，得出基础解：", font="KaiTi", font_size=35).to_edge(UP, buff=1.5)
+        self.play(Write(desc_11))
+
+        # 绝对居中定位
+        final_ans_1 = MathTex(r"f(x) = (x+1)^{\sqrt{2}} - 1").scale(1.2).set_color(YELLOW).move_to(UP * 0.5)
+        final_ans_2 = MathTex(r"f(x) = (x+1)^{-\sqrt{2}} - 1").scale(1.2).set_color(YELLOW).move_to(DOWN * 0.8)
+
+        self.play(FadeIn(final_ans_1, shift=UP))
+        self.play(FadeIn(final_ans_2, shift=UP))
+        self.wait(3)
+
+        # ==================== 第四幕：无穷解 ====================
+        # 全屏清空
+        self.play(
+            FadeOut(desc_11), FadeOut(final_ans_1), FadeOut(final_ans_2)
+        )
+
+        desc_12 = Text("事实上，满足这个嵌套方程的解", font="KaiTi", font_size=35).to_edge(UP, buff=2)
+        self.play(Write(desc_12))
+        self.wait(1)
+
+        outro_1 = Text("有无穷多个", font="KaiTi", font_size=50).set_color_by_gradient(RED, YELLOW).next_to(desc_12,
+                                                                                                                DOWN,
+                                                                                                                buff=0.8)
+        self.play(Write(outro_1))
+        self.wait(1.5)
+
+        outro_2 = Text("至于具体怎么构造", font="KaiTi", font_size=30).next_to(outro_1, DOWN, buff=1.2)
+        self.play(Write(outro_2))
+
+        outro_3 = Text("读者自推不难", font="KaiTi", font_size=45).set_color(BLUE).next_to(outro_2, DOWN, buff=0.6)
+        self.play(Write(outro_3))
+        self.wait(4)
+
+        # ==================== 散场 ====================
+        self.play(
+            *[FadeOut(m) for m in self.mobjects]
+        )
+        self.wait(1)
