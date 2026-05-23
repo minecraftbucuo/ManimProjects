@@ -1,6 +1,22 @@
 from manim import *
 import numpy as np
 
+import manimpango
+
+manimpango.register_font("simkai.ttf")
+
+# === 字体自动映射补丁开始 ===
+_original_text_init = Text.__init__
+
+def _patched_text_init(self, text, *args, **kwargs):
+    # 如果检测到请求 KaiTi，自动重定向到 楷体
+    if kwargs.get('font') == 'KaiTi':
+        kwargs['font'] = '楷体'
+    _original_text_init(self, text, *args, **kwargs)
+
+Text.__init__ = _patched_text_init
+# === 字体自动映射补丁结束 ===
+
 
 class MathematicalHearts(Scene):
     def construct(self):
