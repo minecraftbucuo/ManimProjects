@@ -100,25 +100,64 @@ class SequenceLimitProof(Scene):
         # 彻底清场
         self.play(FadeOut(desc_part1), FadeOut(eq_p1_target), FadeOut(desc_cauchy), FadeOut(eq_cauchy), FadeOut(eq_p1_ans))
 
-        # ==================== 第三幕：求解第二部分极限 ====================
+        # ==================== 第三幕：求解第二部分极限（详细拆解版） ====================
         desc_part2 = Text("第二部分：利用定积分求解对数项极限", font="KaiTi", font_size=32).to_edge(UP, buff=0.8)
         desc_part2.set_color(GREEN)
         self.play(Write(desc_part2))
 
         eq_p2_target = MathTex(r"n \ln \left( \frac{a_{n+1}}{a_n} \right) = \frac{n}{n+1} \ln(n+1)! - \ln n!").next_to(desc_part2, DOWN, buff=0.4)
         self.play(Write(eq_p2_target))
+        self.wait(1)
 
-        desc_p2_expand = Text("展开阶乘并重新组合，提炼出对应结构：", font="KaiTi", font_size=28).next_to(eq_p2_target, DOWN, buff=0.4)
-        self.play(Write(desc_p2_expand))
+        # 步骤 1：拆解阶乘
+        desc_step1 = Text("利用对数性质，将阶乘项独立拆解", font="KaiTi", font_size=26).next_to(eq_p2_target, DOWN, buff=0.4)
+        eq_step1 = MathTex(r"= \frac{n}{n+1} \left[ \ln n! + \ln(n+1) \right] - \ln n!").next_to(desc_step1, DOWN, buff=0.3)
+        self.play(Write(desc_step1), Write(eq_step1))
+        self.wait(1.5)
 
-        eq_p2_step1 = MathTex(r"= \frac{n}{n+1} \left[ \ln\left(1+\frac{1}{n}\right) + \frac{1}{n} \sum_{k=1}^n \left(-\ln \frac{k}{n}\right) \right]").next_to(desc_p2_expand, DOWN, buff=0.3)
-        self.play(Write(eq_p2_step1))
+        # 步骤 2：合并同类项
+        desc_step2 = Text("展开并合并含有阶乘对数的同类项", font="KaiTi", font_size=26).next_to(eq_step1, DOWN, buff=0.4)
+        eq_step2 = MathTex(r"= \frac{n}{n+1} \ln(n+1) - \frac{1}{n+1} \ln n!").next_to(desc_step2, DOWN, buff=0.3)
+        self.play(Write(desc_step2), Write(eq_step2))
+        self.wait(1.5)
+
+        # 第一次局部清场，将步骤2结果移至上方继续推导
+        self.play(
+            FadeOut(eq_p2_target), FadeOut(desc_step1), FadeOut(eq_step1), FadeOut(desc_step2),
+            eq_step2.animate.next_to(desc_part2, DOWN, buff=0.5)
+        )
+
+        # 步骤 3：提取公因式
+        desc_step3 = Text("提取公因式以配凑出积分前置项", font="KaiTi", font_size=26).next_to(eq_step2, DOWN, buff=0.4)
+        eq_step3 = MathTex(r"= \frac{n}{n+1} \left[ \ln(n+1) - \frac{1}{n} \ln n! \right]").next_to(desc_step3, DOWN, buff=0.3)
+        self.play(Write(desc_step3), Write(eq_step3))
+        self.wait(1.5)
+
+        # 步骤 4：展开阶乘求和与对数拆分
+        desc_step4 = Text("分离常数项，并将连乘展开为对数求和", font="KaiTi", font_size=26).next_to(eq_step3, DOWN, buff=0.4)
+        eq_step4 = MathTex(r"= \frac{n}{n+1} \left[ \ln n + \ln\left(1+\frac{1}{n}\right) - \frac{1}{n} \sum_{k=1}^n \ln k \right]").next_to(desc_step4, DOWN, buff=0.3)
+        self.play(Write(desc_step4), Write(eq_step4))
         self.wait(2)
 
-        # 清理局部，向上收拢，为积分推导留出空间
-        self.play(FadeOut(eq_p2_target), FadeOut(desc_p2_expand), eq_p2_step1.animate.next_to(desc_part2, DOWN, buff=0.4))
+        # 第二次局部清场，将步骤4结果移至上方
+        self.play(
+            FadeOut(eq_step2), FadeOut(desc_step3), FadeOut(eq_step3), FadeOut(desc_step4),
+            eq_step4.animate.next_to(desc_part2, DOWN, buff=0.5)
+        )
 
-        desc_riemann = Text("当极限趋于无穷时，求和部分构成黎曼和：", font="KaiTi", font_size=28).next_to(eq_p2_step1, DOWN, buff=0.4)
+        # 步骤 5：合并求和项
+        desc_step5 = Text("将独立对数项移入求和号内，构造比值自变量", font="KaiTi", font_size=26).next_to(eq_step4, DOWN, buff=0.4)
+        eq_step5 = MathTex(r"= \frac{n}{n+1} \left[ \ln\left(1+\frac{1}{n}\right) + \frac{1}{n} \sum_{k=1}^n \left(-\ln \frac{k}{n}\right) \right]").next_to(desc_step5, DOWN, buff=0.3)
+        self.play(Write(desc_step5), Write(eq_step5))
+        self.wait(2)
+
+        # 第三次局部清场，准备转化为积分计算
+        self.play(
+            FadeOut(eq_step4), FadeOut(desc_step5),
+            eq_step5.animate.next_to(desc_part2, DOWN, buff=0.5)
+        )
+
+        desc_riemann = Text("当极限趋于无穷时，求和部分构成黎曼和：", font="KaiTi", font_size=28).next_to(eq_step5, DOWN, buff=0.4)
         self.play(Write(desc_riemann))
 
         eq_integral = MathTex(
@@ -133,7 +172,7 @@ class SequenceLimitProof(Scene):
         self.wait(2.5)
 
         # 彻底清场
-        self.play(FadeOut(desc_part2), FadeOut(eq_p2_step1), FadeOut(desc_riemann), FadeOut(eq_integral), FadeOut(eq_p2_ans))
+        self.play(FadeOut(desc_part2), FadeOut(eq_step5), FadeOut(desc_riemann), FadeOut(eq_integral), FadeOut(eq_p2_ans))
 
         # ==================== 第四幕：总结与结论 ====================
         desc_final = Text("第三部分：结合两部分得出最终结论", font="KaiTi", font_size=32).to_edge(UP, buff=1.0)
