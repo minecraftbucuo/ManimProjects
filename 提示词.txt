@@ -186,7 +186,7 @@ class NestedFunctionFluidProof(Scene):
 1. 所有方程使用正确的LaTeX格式化
 - ✅ 纯中文文本 → 使用 Text() 类
 - ✅ 纯数学公式 → 使用 MathTex() 类
-- ✅ 混合内容 → 分别渲染后用 VGroup() 组合）
+- ✅ 混合内容 → 分别渲染后用 VGroup() 组合
 
 无论多简单的字母，比如x也要用latex渲染，然后和文字用VGroup组合，不要偷懒
 另外你说的话别那么不正经，别用那样的比喻句，不要像AI讲的话，你就用教材中说的话的方式类似就行
