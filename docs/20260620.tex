@@ -1,0 +1,317 @@
+% !TEX program = xelatex
+\documentclass[11pt,a4paper]{ctexart}
+
+% ==================== 颜色 ====================
+\usepackage{xcolor}
+\definecolor{maincolor}{HTML}{1A7A6B}       % 主色（标题、顶栏、框边框）
+\definecolor{accent}{HTML}{D4A843}          % 强调色（关键词高亮）
+\definecolor{boxbg}{HTML}{F0F7F5}           % 问题框背景
+\definecolor{borderblue}{HTML}{2E86AB}      % 方法框边框
+\definecolor{proofbg}{HTML}{FDF8F0}         % 方法框背景
+\definecolor{summarybg}{HTML}{F5F0FF}       % 总结框背景
+
+% ==================== 页面 ====================
+\usepackage[top=2.2cm, bottom=2.2cm, left=2.5cm, right=2.5cm, headheight=23.12pt]{geometry}
+
+% ==================== 字体 ====================
+\setmainfont{TeX Gyre Pagella}
+
+% ==================== 数学 ====================
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+
+% ==================== 彩色框 ====================
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable,most}
+
+% ==================== 页眉页脚 ====================
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\color{maincolor}\sffamily\bfseries 数学讲义}
+\fancyhead[R]{\color{gray}\sffamily \today}
+\fancyfoot[C]{\color{gray}\sffamily\thepage}
+\renewcommand{\headrulewidth}{1.5pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{maincolor}\leaders\hrule height \headrulewidth\hfill}}
+
+% ==================== 章节标题样式 ====================
+\usepackage{titlesec}
+\titleformat{\section}
+  {\color{maincolor}\sffamily\LARGE\bfseries}
+  {\thesection}{1em}{}
+  [\vspace{0.3cm}{\color{maincolor!40}\titlerule[2pt]}]
+
+\titleformat{\subsection}
+  {\color{maincolor!80}\sffamily\Large\bfseries}
+  {\thesubsection}{1em}{}
+
+% ==================== 表格 ====================
+\usepackage{array,booktabs,colortbl}
+
+% ==================== 杂项 ====================
+\usepackage{enumitem}
+\setlist{nosep, leftmargin=*}
+\usepackage[hidelinks]{hyperref}
+
+% ==================== 自定义命令 ====================
+\newcommand{\highlight}[1]{\colorbox{accent!20}{\sffamily\bfseries #1}}
+
+% ==================== 自定义环境 ====================
+
+% 1. 问题框 —— 青绿边框 + 浅绿背景
+\newtcolorbox[auto counter]{problembox}[1][]{
+  enhanced,
+  colframe=maincolor,
+  colback=boxbg,
+  coltitle=white,
+  fonttitle=\sffamily\bfseries,
+  title={\large 问题},
+  attach boxed title to top left={xshift=4mm, yshift=-2mm},
+  boxed title style={colback=maincolor, sharp corners},
+  sharp corners,
+  boxrule=1.2pt,
+  left=4mm, right=4mm, top=5mm, bottom=4mm,
+  before skip=1.2em, after skip=1.2em,
+  #1
+}
+
+% 2. 方法/证明框 —— 蓝边框 + 暖白背景，第二个参数是标题文字
+\newtcolorbox[auto counter]{methodbox}[2][]{
+  enhanced,
+  colframe=borderblue,
+  colback=proofbg,
+  coltitle=white,
+  fonttitle=\sffamily\bfseries,
+  title={#2},
+  attach boxed title to top left={xshift=4mm, yshift=-2mm},
+  boxed title style={colback=borderblue, sharp corners},
+  sharp corners,
+  boxrule=1.2pt,
+  left=4mm, right=4mm, top=5mm, bottom=4mm,
+  before skip=1.2em, after skip=1.2em,
+  #1
+}
+
+% 3. 总结框 —— 淡紫背景
+\newtcolorbox{summarybox}[1][]{
+  enhanced,
+  colframe=maincolor!60,
+  colback=summarybg,
+  coltitle=white,
+  fonttitle=\sffamily\bfseries,
+  title={\large $\blacktriangleright$ 总结},
+  attach boxed title to top left={xshift=4mm, yshift=-2mm},
+  boxed title style={colback=maincolor!70, sharp corners},
+  sharp corners,
+  boxrule=1.2pt,
+  left=4mm, right=4mm, top=5mm, bottom=4mm,
+  before skip=1.5em, after skip=1.2em,
+  #1
+}
+
+% ==================== 文档开始 ====================
+\begin{document}
+
+% ---- 彩色顶栏标题 ----
+\begin{tcolorbox}[
+  enhanced,
+  colframe=maincolor,
+  colback=maincolor,
+  sharp corners,
+  boxrule=0pt,
+  height=2.8cm,
+  valign=center,
+  before skip=-2.2cm,
+  after skip=1.5cm,
+  grow to left by=2.5cm,
+  grow to right by=2.5cm,
+]
+  \begin{center}
+    {\color{white}\sffamily\bfseries\Huge 完全平方数问题}\\[3pt]
+    {\color{white!85}\sffamily\large 求所有正整数 $n$ 使 $n^2 + 2n + 12$ 为完全平方数}
+  \end{center}
+\end{tcolorbox}
+
+\vspace{0.5cm}
+
+\begin{flushright}
+  {\color{gray}\sffamily \today}
+\end{flushright}
+
+% ==================== 正文 ====================
+
+\section{问题陈述}
+
+\begin{problembox}
+求所有正整数 $n$，使得表达式
+\[
+  n^2 + 2n + 12
+\]
+为完全平方数（即等于某个整数的平方）。
+\end{problembox}
+
+本题是一道典型的初等数论题，考察完全平方数的构造与不等式放缩技巧。下面给出两种不同思路的解法。
+
+\section{解法一：配方与因式分解法}
+
+\begin{methodbox}{核心思路}
+先将二次表达式配方，引入新变量 \highlight{$m$} 表示目标平方数，再通过移项、平方差公式化为两因式相乘等于一个\highlight{质数}的形式，利用质数的因子唯一性建立方程组求解。
+\end{methodbox}
+
+\subsection*{第一步：设未知平方数}
+
+假设原式等于某个正整数 $m$ 的平方：
+\[
+  n^2 + 2n + 12 = m^2
+\]
+
+\subsection*{第二步：配方}
+
+对等式左边的前两项进行配方：
+\[
+  (n^2 + 2n + 1) + 11 = m^2
+\]
+即
+\[
+  (n+1)^2 + 11 = m^2
+\]
+
+\subsection*{第三步：移项并因式分解}
+
+将 $(n+1)^2$ 移到右边，利用平方差公式：
+\begin{align*}
+  m^2 - (n+1)^2 &= 11 \\[4pt]
+  (m - n - 1)(m + n + 1) &= 11
+\end{align*}
+
+我们得到了一个\highlight{关键等式}：两个正整数因式的乘积等于 $11$。
+
+\subsection*{第四步：利用质数性质}
+
+因为 $11$ 是\highlight{质数}，且 $m,n$ 均为正整数，两个因式都是正整数。质数 $11$ 的正因子只有 $1$ 和 $11$。
+
+又由于 $m + n + 1 > m - n - 1$，所以必有：
+\[
+  \begin{cases}
+    m - n - 1 = 1 \\[4pt]
+    m + n + 1 = 11
+  \end{cases}
+\]
+
+\subsection*{第五步：求解 $n$}
+
+两式相减消去 $m$：
+\begin{align*}
+  (m + n + 1) - (m - n - 1) &= 11 - 1 \\
+  2n + 2 &= 10 \\
+  n &= 4
+\end{align*}
+
+代入验证：$n=4$ 时，$n^2 + 2n + 12 = 16 + 8 + 12 = 36 = 6^2$，确为完全平方数。
+
+% ==================== 新页 ====================
+\newpage
+
+\section{解法二：放缩与夹逼法}
+
+\begin{methodbox}{核心思路}
+不引入额外变量，直接通过不等式放缩，将原式\highlight{夹在}两个相邻（次邻）的完全平方数之间。若原式本身是完全平方数，则它必须等于两界之间唯一可能的那个平方数，从而直接解出 $n$。
+\end{methodbox}
+
+\subsection*{第一步：寻找下界}
+
+比较 $n^2 + 2n + 12$ 与 $(n+1)^2$：
+\begin{align*}
+  (n+1)^2 &= n^2 + 2n + 1
+\end{align*}
+
+显然
+\[
+  n^2 + 2n + 12 > n^2 + 2n + 1 = (n+1)^2
+\]
+
+这里没有使用不等式方向——差值 $11 > 0$，对任意正整数 $n$ 恒成立。于是我们得到严格的\highlight{下界}：
+\[
+  \boxed{n^2 + 2n + 12 > (n+1)^2}
+\]
+
+\subsection*{第二步：寻找上界}
+
+再比较 $n^2 + 2n + 12$ 与 $(n+3)^2$：
+\begin{align*}
+  (n+3)^2 &= n^2 + 6n + 9
+\end{align*}
+
+计算差值：
+\begin{align*}
+  (n+3)^2 - (n^2 + 2n + 12) &= (n^2 + 6n + 9) - (n^2 + 2n + 12) \\
+  &= 4n - 3
+\end{align*}
+
+当 $n \geqslant 1$ 时，$4n - 3 \geqslant 1 > 0$，恒成立。因此有\highlight{上界}：
+\[
+  \boxed{n^2 + 2n + 12 < (n+3)^2}
+\]
+
+\subsection*{第三步：夹逼}
+
+综合上下界：
+\[
+  (n+1)^2 < n^2 + 2n + 12 < (n+3)^2
+\]
+
+原式被严格夹在两个平方数之间。在正整数序列中，$(n+1)^2$ 与 $(n+3)^2$ 之间只有\highlight{一个}完全平方数——$(n+2)^2$。
+
+\subsection*{第四步：唯一解}
+
+因此，若原式本身是完全平方数，则它\highlight{必须}等于 $(n+2)^2$：
+\[
+  n^2 + 2n + 12 = (n+2)^2
+\]
+
+展开右边并化简：
+\begin{align*}
+  n^2 + 2n + 12 &= n^2 + 4n + 4 \\
+  2n + 12 &= 4n + 4 \\
+  2n &= 8 \\
+  n &= 4
+\end{align*}
+
+同样得到 $n=4$，与解法一结果一致。
+
+\section{总结}
+
+\begin{summarybox}
+
+\subsection*{方法对比}
+
+\begin{tabular}{@{}>{\sffamily\bfseries}p{2.6cm} p{5.5cm} p{5.5cm}@{}}
+\toprule
+& \color{maincolor} \textbf{配方与因式分解法} & \color{borderblue} \textbf{放缩与夹逼法} \\
+\midrule
+\textbf{切入点}   & 设未知平方数 $m$，构造等式 & 直接比较原式与邻近平方数 \\
+\textbf{核心工具} & 配方法、平方差公式、质数性质 & 不等式放缩、平方数间隔 \\
+\textbf{关键步骤} & 化为 $(m-n-1)(m+n+1)=11$ & 夹在 $(n+1)^2$ 与 $(n+3)^2$ 之间 \\
+\textbf{技巧要点} & 需要注意到 $11$ 是质数 & 上界选择 $(n+3)^2$ 需试凑 \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+
+\subsection*{结论}
+
+两种方法殊途同归，原式 $n^2 + 2n + 12$ 为完全平方数当且仅当：
+
+\begin{center}
+\begin{tcolorbox}[
+  enhanced, colframe=accent!80, colback=accent!10,
+  sharp corners, boxrule=1.5pt, width=6cm, center,
+]
+  {\color{maincolor}\sffamily\bfseries\LARGE $n = 4$}
+\end{tcolorbox}
+\end{center}
+
+验证：$4^2 + 2 \times 4 + 12 = 16 + 8 + 12 = 36 = 6^2$。
+
+\end{summarybox}
+
+\end{document}
