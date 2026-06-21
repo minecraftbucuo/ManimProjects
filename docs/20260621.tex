@@ -1,0 +1,310 @@
+% !TEX program = xelatex
+\documentclass[11pt,a4paper]{ctexart}
+
+% ==================== 颜色 ====================
+\usepackage{xcolor}
+\definecolor{maincolor}{HTML}{1A7A6B}       % 主色（标题、顶栏、框边框）
+\definecolor{accent}{HTML}{D4A843}          % 强调色（关键词高亮）
+\definecolor{boxbg}{HTML}{F0F7F5}           % 问题框背景
+\definecolor{borderblue}{HTML}{2E86AB}      % 方法框边框
+\definecolor{proofbg}{HTML}{FDF8F0}         % 方法框背景
+\definecolor{summarybg}{HTML}{F5F0FF}       % 总结框背景
+
+% ==================== 页面 ====================
+\usepackage[top=2.2cm, bottom=2.2cm, left=2.5cm, right=2.5cm, headheight=23.12pt]{geometry}
+
+% ==================== 字体 ====================
+\setmainfont{TeX Gyre Pagella}
+
+% ==================== 数学 ====================
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+
+% ==================== 彩色框 ====================
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable,most}
+
+% ==================== 页眉页脚 ====================
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\color{maincolor}\sffamily\bfseries 数学讲义}
+\fancyhead[R]{\color{gray}\sffamily \today}
+\fancyfoot[C]{\color{gray}\sffamily\thepage}
+\renewcommand{\headrulewidth}{1.5pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{maincolor}\leaders\hrule height \headrulewidth\hfill}}
+
+% ==================== 章节标题样式 ====================
+\usepackage{titlesec}
+\titleformat{\section}
+  {\color{maincolor}\sffamily\LARGE\bfseries}
+  {\thesection}{1em}{}
+  [\vspace{0.3cm}{\color{maincolor!40}\titlerule[2pt]}]
+
+\titleformat{\subsection}
+  {\color{maincolor!80}\sffamily\Large\bfseries}
+  {\thesubsection}{1em}{}
+
+% ==================== 表格 ====================
+\usepackage{array,booktabs,colortbl}
+
+% ==================== 杂项 ====================
+\usepackage{enumitem}
+\setlist{nosep, leftmargin=*}
+\usepackage[hidelinks]{hyperref}
+
+% ==================== 自定义命令 ====================
+\newcommand{\highlight}[1]{\colorbox{accent!20}{\sffamily\bfseries #1}}
+
+% ==================== 自定义环境 ====================
+
+% 1. 问题框 —— 青绿边框 + 浅绿背景
+\newtcolorbox[auto counter]{problembox}[1][]{
+  enhanced,
+  colframe=maincolor,
+  colback=boxbg,
+  coltitle=white,
+  fonttitle=\sffamily\bfseries,
+  title={\large 问题},
+  attach boxed title to top left={xshift=4mm, yshift=-2mm},
+  boxed title style={colback=maincolor, sharp corners},
+  sharp corners,
+  boxrule=1.2pt,
+  left=4mm, right=4mm, top=5mm, bottom=4mm,
+  before skip=1.2em, after skip=1.2em,
+  #1
+}
+
+% 2. 方法/证明框 —— 蓝边框 + 暖白背景
+\newtcolorbox[auto counter]{methodbox}[2][]{
+  enhanced,
+  colframe=borderblue,
+  colback=proofbg,
+  coltitle=white,
+  fonttitle=\sffamily\bfseries,
+  title={#2},
+  attach boxed title to top left={xshift=4mm, yshift=-2mm},
+  boxed title style={colback=borderblue, sharp corners},
+  sharp corners,
+  boxrule=1.2pt,
+  left=4mm, right=4mm, top=5mm, bottom=4mm,
+  before skip=1.2em, after skip=1.2em,
+  #1
+}
+
+% 3. 总结框 —— 淡紫背景
+\newtcolorbox{summarybox}[1][]{
+  enhanced,
+  colframe=maincolor!60,
+  colback=summarybg,
+  coltitle=white,
+  fonttitle=\sffamily\bfseries,
+  title={\large $\blacktriangleright$ 总结},
+  attach boxed title to top left={xshift=4mm, yshift=-2mm},
+  boxed title style={colback=maincolor!70, sharp corners},
+  sharp corners,
+  boxrule=1.2pt,
+  left=4mm, right=4mm, top=5mm, bottom=4mm,
+  before skip=1.5em, after skip=1.2em,
+  #1
+}
+
+% ==================== 文档开始 ====================
+\begin{document}
+
+% ---- 彩色顶栏标题 ----
+\begin{tcolorbox}[
+  enhanced,
+  colframe=maincolor,
+  colback=maincolor,
+  sharp corners,
+  boxrule=0pt,
+  height=2.8cm,
+  valign=center,
+  before skip=-2.2cm,
+  after skip=1.5cm,
+  grow to left by=2.5cm,
+  grow to right by=2.5cm,
+]
+  \begin{center}
+    {\color{white}\sffamily\bfseries\Huge 最小正整数问题}\\[3pt]
+    {\color{white!85}\sffamily\large 求具有 $21$ 个正因数的最小正整数}
+  \end{center}
+\end{tcolorbox}
+
+\vspace{0.5cm}
+
+\begin{flushright}
+  {\color{gray}\sffamily \today}
+\end{flushright}
+
+% ==================== 正文 ====================
+
+\section{问题陈述}
+
+\begin{problembox}
+求具有 $21$ 个正因数的\highlight{最小正整数}。
+\end{problembox}
+
+这类问题的关键在于把“正因数个数”转化为素因数分解中指数的乘积，再通过指数分配比较不同结构下的最小值。
+
+\section{约数个数定理}
+
+\begin{methodbox}{核心思路}
+先写出正整数 $N$ 的标准素因数分解，再用\highlight{约数个数公式}把题目条件 $d(N)=21$ 转化为指数条件。
+\end{methodbox}
+
+\subsection*{标准素因数分解}
+
+设正整数 $N$ 的标准素因数分解为：
+\[
+  N = p_1^{a_1} \cdot p_2^{a_2} \cdots p_k^{a_k}
+\]
+
+其中 $p_1,p_2,\ldots,p_k$ 为不同素数，$a_1,a_2,\ldots,a_k$ 为正整数。
+
+\subsection*{正因数个数公式}
+
+其正因数个数 $d(N)$ 的计算公式为：
+\[
+  d(N) = (a_1 + 1)(a_2 + 1) \cdots (a_k + 1)
+\]
+
+题目要求：
+\[
+  d(N)=21
+\]
+
+因此需要把 $21$ 分解为若干个大于 $1$ 的整数乘积，再反推出对应的指数。
+
+\section{分解目标值}
+
+\begin{methodbox}{核心思路}
+将 $21$ 写成大于 $1$ 的整数乘积。每个乘积因子都对应某个指数加一，即 $a_i+1$。
+\end{methodbox}
+
+\subsection*{目标值分解}
+
+将数字 $21$ 分解为大于 $1$ 的整数乘积，只有两类情况：
+\[
+  21 = 21
+\]
+\[
+  21 = 7 \times 3
+\]
+
+\subsection*{对应的素因子结构}
+
+由 $d(N)=(a_1+1)(a_2+1)\cdots(a_k+1)$ 可知，对应的 $N$ 的素因子结构必然为以下两种形态：
+\[
+  N = p_1^{20}
+\]
+\[
+  N = p_1^6 \cdot p_2^2
+\]
+
+第一种来自 $a_1+1=21$，所以 $a_1=20$；第二种来自 $a_1+1=7$、$a_2+1=3$，所以指数为 $6$ 和 $2$。
+
+% ==================== 新页 ====================
+\newpage
+
+\section{最小值分析}
+
+\begin{methodbox}{核心思路}
+为使 $N$ 尽可能小，应将\highlight{较大的指数}分配给\highlight{较小的素数}。因此优先使用最小素数 $2,3,5,\ldots$，并让较大指数落在 $2$ 上。
+\end{methodbox}
+
+\subsection*{素数选择原则}
+
+正整数从小到大的素数依次为：
+\[
+  2,3,5,\dots
+\]
+
+在指数结构确定后，要得到最小的 $N$，应从最小的素数开始取值，并让较大的指数对应较小的素数。
+
+\subsection*{单素因子结构}
+
+对于形态一
+\[
+  N = p_1^{20}
+\]
+
+取最小素数 $2$，得到：
+\[
+  N = 2^{20} = 1048576
+\]
+
+\subsection*{双素因子结构}
+
+对于形态二
+\[
+  N = p_1^6 \cdot p_2^2
+\]
+
+将指数 $6$ 和 $2$ 分别分配给素数 $2$ 和 $3$：
+\[
+  N = 2^6 \cdot 3^2
+\]
+
+计算得：
+\[
+  N = 64 \times 9 = 576
+\]
+
+\subsection*{两种结构比较}
+
+对比两种形态取得的极小值：
+\[
+  576 < 1048576
+\]
+
+因此满足条件的最小正整数来自第二种结构。
+
+\section{总结}
+
+\begin{summarybox}
+
+\subsection*{推导结构}
+
+\begin{center}
+\begin{tabular}{@{}>{\sffamily\bfseries}p{3.2cm} p{10.8cm}@{}}
+\toprule
+\textbf{步骤} & \textbf{内容} \\
+\midrule
+约数个数定理 & 若 $N=p_1^{a_1}p_2^{a_2}\cdots p_k^{a_k}$，则 $d(N)=(a_1+1)(a_2+1)\cdots(a_k+1)$ \\
+目标条件 & 题目要求 $d(N)=21$ \\
+目标分解 & $21=21$ 或 $21=7\times3$ \\
+结构一 & $N=p_1^{20}$，最小取 $2^{20}=1048576$ \\
+结构二 & $N=p_1^6\cdot p_2^2$，最小取 $2^6\cdot3^2=576$ \\
+比较结论 & $576<1048576$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+
+\subsection*{结论}
+
+满足条件的最小正整数为：
+
+\begin{center}
+\begin{tcolorbox}[
+  enhanced, colframe=accent!80, colback=accent!10,
+  sharp corners, boxrule=1.5pt, width=6cm, center,
+]
+  {\color{maincolor}\sffamily\bfseries\LARGE $576$}
+\end{tcolorbox}
+\end{center}
+
+验证：
+\[
+  576 = 2^6 \cdot 3^2
+\]
+所以
+\[
+  d(576)=(6+1)(2+1)=7\times3=21
+\]
+
+\end{summarybox}
+
+\end{document}
