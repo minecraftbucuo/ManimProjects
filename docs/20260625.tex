@@ -1,0 +1,298 @@
+% !TEX program = xelatex
+\documentclass[11pt,a4paper]{ctexart}
+
+% ==================== 颜色 ====================
+\usepackage{xcolor}
+\definecolor{maincolor}{HTML}{1A7A6B}       % 主色（标题、顶栏、框边框）
+\definecolor{accent}{HTML}{D4A843}          % 强调色（关键词高亮）
+\definecolor{boxbg}{HTML}{F0F7F5}           % 问题框背景
+\definecolor{borderblue}{HTML}{2E86AB}      % 方法框边框
+\definecolor{proofbg}{HTML}{FDF8F0}         % 方法框背景
+\definecolor{summarybg}{HTML}{F5F0FF}       % 总结框背景
+
+% ==================== 页面 ====================
+\usepackage[top=2.2cm, bottom=2.2cm, left=2.5cm, right=2.5cm, headheight=23.12pt]{geometry}
+
+% ==================== 字体 ====================
+\setmainfont{TeX Gyre Pagella}
+
+% ==================== 数学 ====================
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+
+% ==================== 彩色框 ====================
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable,most}
+
+% ==================== 页眉页脚 ====================
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\color{maincolor}\sffamily\bfseries 数学讲义}
+\fancyhead[R]{\color{gray}\sffamily \today}
+\fancyfoot[C]{\color{gray}\sffamily\thepage}
+\renewcommand{\headrulewidth}{1.5pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{maincolor}\leaders\hrule height \headrulewidth\hfill}}
+
+% ==================== 章节标题样式 ====================
+\usepackage{titlesec}
+\titleformat{\section}
+  {\color{maincolor}\sffamily\LARGE\bfseries}
+  {\thesection}{1em}{}
+  [\vspace{0.3cm}{\color{maincolor!40}\titlerule[2pt]}]
+
+\titleformat{\subsection}
+  {\color{maincolor!80}\sffamily\Large\bfseries}
+  {\thesubsection}{1em}{}
+
+% ==================== 表格 ====================
+\usepackage{array,booktabs,colortbl}
+
+% ==================== 杂项 ====================
+\usepackage{enumitem}
+\setlist{nosep, leftmargin=*}
+\usepackage[hidelinks]{hyperref}
+
+% ==================== 自定义命令 ====================
+\newcommand{\highlight}[1]{\colorbox{accent!20}{\sffamily\bfseries #1}}
+
+% ==================== 自定义环境 ====================
+
+% 1. 问题框 —— 青绿边框 + 浅绿背景
+\newtcolorbox[auto counter]{problembox}[1][]{
+  enhanced,
+  colframe=maincolor,
+  colback=boxbg,
+  coltitle=white,
+  fonttitle=\sffamily\bfseries,
+  title={\large 问题},
+  attach boxed title to top left={xshift=4mm, yshift=-2mm},
+  boxed title style={colback=maincolor, sharp corners},
+  sharp corners,
+  boxrule=1.2pt,
+  left=4mm, right=4mm, top=5mm, bottom=4mm,
+  before skip=1.2em, after skip=1.2em,
+  #1
+}
+
+% 2. 方法/证明框 —— 蓝边框 + 暖白背景
+\newtcolorbox[auto counter]{methodbox}[2][]{
+  enhanced,
+  colframe=borderblue,
+  colback=proofbg,
+  coltitle=white,
+  fonttitle=\sffamily\bfseries,
+  title={#2},
+  attach boxed title to top left={xshift=4mm, yshift=-2mm},
+  boxed title style={colback=borderblue, sharp corners},
+  sharp corners,
+  boxrule=1.2pt,
+  left=4mm, right=4mm, top=5mm, bottom=4mm,
+  before skip=1.2em, after skip=1.2em,
+  #1
+}
+
+% 3. 总结框 —— 淡紫背景
+\newtcolorbox{summarybox}[1][]{
+  enhanced,
+  colframe=maincolor!60,
+  colback=summarybg,
+  coltitle=white,
+  fonttitle=\sffamily\bfseries,
+  title={\large $\blacktriangleright$ 总结},
+  attach boxed title to top left={xshift=4mm, yshift=-2mm},
+  boxed title style={colback=maincolor!70, sharp corners},
+  sharp corners,
+  boxrule=1.2pt,
+  left=4mm, right=4mm, top=5mm, bottom=4mm,
+  before skip=1.5em, after skip=1.2em,
+  #1
+}
+
+% ==================== 文档开始 ====================
+\begin{document}
+
+% ---- 彩色顶栏标题 ----
+\begin{tcolorbox}[
+  enhanced,
+  colframe=maincolor,
+  colback=maincolor,
+  sharp corners,
+  boxrule=0pt,
+  height=2.8cm,
+  valign=center,
+  before skip=-2.2cm,
+  after skip=1.5cm,
+  grow to left by=2.5cm,
+  grow to right by=2.5cm,
+]
+  \begin{center}
+    {\color{white}\sffamily\bfseries\Huge 求代数式最大值的两种方法}\\[3pt]
+    {\color{white!85}\sffamily\large $\displaystyle \max \frac{xy + 2yz}{x^2 + y^2 + z^2}$}
+  \end{center}
+\end{tcolorbox}
+
+\vspace{0.5cm}
+
+\begin{flushright}
+  {\color{gray}\sffamily \today}
+\end{flushright}
+
+% ==================== 正文 ====================
+
+\section{问题陈述}
+
+\begin{problembox}
+求代数式 $\displaystyle \frac{xy + 2yz}{x^2 + y^2 + z^2}$ 的\highlight{最大值}。
+\end{problembox}
+
+本题可使用两种不同方法求解：方法一借助\highlight{基本不等式}与\highlight{待定系数法}，通过引入参数配凑系数；方法二则利用\highlight{柯西不等式}与\highlight{换元法}，从不同角度切入。
+
+% ==================== 新页 ====================
+\newpage
+
+\section{解法一：基本不等式与待定系数法}
+
+\begin{methodbox}{核心思路}
+引入待定正数 $a,b>0$，对分子中的两项分别使用基本不等式 $uv \le \frac{\alpha}{2}u^2 + \frac{1}{2\alpha}v^2$ 进行放缩，再通过\highlight{令各项系数相等}的方式确定 $a,b$ 的值，从而配凑出分母并求得最大值。
+\end{methodbox}
+
+\subsection*{引入待定系数并放缩}
+
+引入待定常数 $a>0,\; b>0$，对分子各项逐一使用基本不等式：
+
+\[
+xy \le \frac{a}{2}x^2 + \frac{1}{2a}y^2
+\]
+
+\[
+2yz \le \frac{b}{2}y^2 + \frac{2}{b}z^2
+\]
+
+\subsection*{相加并配凑系数}
+
+将上述两式相加，并按 $x^2,y^2,z^2$ 合并同类项：
+
+\[
+xy + 2yz \le \frac{a}{2}x^2 + \left(\frac{1}{2a} + \frac{b}{2}\right)y^2 + \frac{2}{b}z^2
+\]
+
+为配凑出分母 $x^2+y^2+z^2$ 的结构，令各项系数均等于同一常数 $k$：
+
+\[
+\frac{a}{2} = \frac{1}{2a} + \frac{b}{2} = \frac{2}{b} = k
+\]
+
+\subsection*{求解待定系数}
+
+由连等式的左右两端可得：
+
+\[
+a = 2k,\quad b = \frac{2}{k}
+\]
+
+将其代入中间等式进行求解：
+
+\[
+\frac{1}{2(2k)} + \frac{2/k}{2} = k
+\quad\Longrightarrow\quad
+k^2 = \frac{5}{4}
+\]
+
+取正值 $k = \frac{\sqrt{5}}{2}$，即得：
+
+\[
+\boxed{\frac{xy + 2yz}{x^2 + y^2 + z^2} \le k = \frac{\sqrt{5}}{2}}
+\]
+
+因此该代数式的最大值为 $\displaystyle \frac{\sqrt{5}}{2}$。
+
+% ==================== 新页 ====================
+\newpage
+
+\section{解法二：柯西不等式与换元法}
+
+\begin{methodbox}{核心思路}
+先将分子提取公因式 $y$，对含 $x,z$ 的部分使用\highlight{二维柯西不等式}，随后通过\highlight{换元} $t=\sqrt{x^2+z^2}$ 化简结构，最后再次使用\highlight{基本不等式}放缩分母即得结果。
+\end{methodbox}
+
+\subsection*{提取公因式与柯西不等式}
+
+提取分子中的公因式 $y$：
+
+\[
+xy + 2yz = y(x + 2z)
+\]
+
+对含有 $x$ 与 $z$ 的部分使用二维柯西不等式：
+
+\[
+(x + 2z)^2 \le (1^2 + 2^2)(x^2 + z^2) = 5(x^2 + z^2)
+\]
+
+\subsection*{换元化简}
+
+两边开平方，代回原分式中：
+
+\[
+\frac{y(x + 2z)}{x^2 + y^2 + z^2}
+\le \frac{\sqrt{5}\,y\sqrt{x^2 + z^2}}{x^2 + y^2 + z^2}
+\]
+
+为简化结构，令 $t = \sqrt{x^2 + z^2}$ 进行整体换元，原式化为：
+
+\[
+\frac{\sqrt{5}\,yt}{y^2 + t^2}
+\]
+
+\subsection*{基本不等式放缩分母}
+
+利用基本不等式 $y^2 + t^2 \ge 2yt$ 放缩分母：
+
+\[
+\frac{\sqrt{5}\,yt}{y^2 + t^2}
+\le \frac{\sqrt{5}\,yt}{2yt}
+= \frac{\sqrt{5}}{2}
+\]
+
+因此：
+
+\[
+\boxed{\frac{xy + 2yz}{x^2 + y^2 + z^2} \le \frac{\sqrt{5}}{2}}
+\]
+
+即该代数式的最大值为 $\displaystyle \frac{\sqrt{5}}{2}$。
+
+\section{总结}
+
+\begin{summarybox}
+
+\subsection*{方法对比}
+
+\begin{tabular}{@{}>{\sffamily\bfseries}p{2.8cm} p{5.5cm} p{5.5cm}@{}}
+\toprule
+& \color{maincolor} \textbf{解法一：基本不等式与待定系数法} & \color{borderblue} \textbf{解法二：柯西不等式与换元法} \\
+\midrule
+\textbf{切入点}   & 直接对分子各项引入参数放缩 & 提取公因式 $y$，分离 $x,z$ 结构 \\
+\textbf{核心工具} & 基本不等式 $+$ 待定系数 & 柯西不等式 $+$ 换元 $+$ 基本不等式 \\
+\textbf{关键技巧} & 令系数相等以配凑分母 & 令 $t=\sqrt{x^2+z^2}$ 化简分式 \\
+\bottomrule
+\end{tabular}
+
+\vspace{1em}
+
+\subsection*{结论}
+
+两种解法从不同角度切入，最终求得该代数式的最大值均为：
+
+\begin{center}
+\begin{tcolorbox}[
+  enhanced, colframe=accent!80, colback=accent!10,
+  sharp corners, boxrule=1.5pt, width=6cm, center,
+]
+  {\color{maincolor}\sffamily\bfseries\LARGE $\displaystyle \frac{\sqrt{5}}{2}$}
+\end{tcolorbox}
+\end{center}
+
+\end{summarybox}
+
+\end{document}
