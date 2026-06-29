@@ -3,6 +3,11 @@
 然后，把这个过程写成manim代码，风格参考我给你的代码：
 from manim import *
 
+# 强制设置竖屏分辨率和自适应帧大小
+config.pixel_width = 1080
+config.pixel_height = 1920
+config.frame_width = 8.0
+config.frame_height = 14.22
 
 class NestedFunctionFluidProof(Scene):
     def construct(self):
@@ -193,7 +198,6 @@ class NestedFunctionFluidProof(Scene):
 还有你写公式的时候需要检查，别让他和其他公式或文字重叠
 别创新，创新你也创不好，就用我给你的那个代码模版
 标题简单点朴素点
-一定要注意公式是否会超出屏幕外面！请控制公式的行数，当太多时消失掉不必要的公式然后继续展示
 多一点文字描述
 那个三二一倒计时不要挡住题目和标题了，在他们下面
 新建一个文件在”数学“文件夹，文件名为今天的日期，例如20260601.py
